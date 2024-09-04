@@ -7,11 +7,12 @@
 <title>Insert title here</title>
 </head>
 <body>
-   <%
-   for (int i = 1; i<=100; i++){
-	   out.println("abcde12345");
-   }
-   
-   %>
+
+<%
+for (int i = 1; i<=100; i++) {
+	out.println("abcde12345");
+}
+%>
+
 </body>
 </html>

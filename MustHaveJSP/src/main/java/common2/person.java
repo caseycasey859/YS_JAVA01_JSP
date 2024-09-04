@@ -1,13 +1,13 @@
 package common2;
 
-public class person {
+public class Person {
 	private String name;
 	private int age;
 	
-	public person() {
+	public Person() {
 	}
 
-	public person(String name, int age) {
+	public Person(String name, int age) {
 		super();
 		this.name = name;
 		this.age = age;

@@ -8,7 +8,6 @@
 </head>
 <body>
 <%
-request.setCharacterEncoding("UTF-8");
 String id = request.getParameter("id");
 String sex = request.getParameter("sex");
 String[] favo = request.getParameterValues("favo");

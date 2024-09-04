@@ -39,7 +39,8 @@ $(function() {
 %>
     <div id="popup">
         <h2 align="center">공지사항 팝업입니다.</h2>
-        <div align="right"><form name="popFrm">
+        <div align="right">
+        <form name="popFrm">
             <input type="checkbox" id="inactiveToday" value="1" /> 
             하루 동안 열지 않음
             <input type="button" value="닫기" id="closeBtn" /> 
