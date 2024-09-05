@@ -13,7 +13,7 @@
 <%
 String loginErr = request.getParameter("loginErr");
 if (loginErr != null) {
-	out.println("로그인실패");
+	out.println("도서입력실패");
 }
 %>
 <form action="./ResponseLogin.jsp" method="post">
