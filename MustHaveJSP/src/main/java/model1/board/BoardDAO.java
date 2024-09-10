@@ -56,7 +56,7 @@ public class BoardDAO extends JDBConnect {
 			try {
 				stmt = con.createStatement();
 				rs = stmt.executeQuery(query);
-				
+				while(rs.next()) {
 				BoardDTO dto = new BoardDTO();
 				dto.setNum(rs.getString("num"));
 				dto.setTitle(rs.getString("title"));
@@ -65,7 +65,7 @@ public class BoardDAO extends JDBConnect {
 				dto.setName(rs.getString("name"));
 				dto.setPostdate(rs.getDate("postdate"));
 				dto.setVisitcount(rs.getString("visitcount"));			
-				bbs.add(dto);				
+				bbs.add(dto);		}		
 			} catch(Exception e) {
 				System.out.println("게시판 목록을 읽어오다가 에러발생");
 				e.printStackTrace();			
