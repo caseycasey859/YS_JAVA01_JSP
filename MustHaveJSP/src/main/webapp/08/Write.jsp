@@ -15,7 +15,7 @@ function validateForm(form){
 
 <!-- 메뉴 -->
 <jsp:include page="../common/Link.jsp" />
-<h2>글쓰기(List)</h2>
+<h2>글쓰기(Write)</h2>
 
 
 <form name = "writeFrm" method="post" action="WriteProcess.jsp" 
