@@ -7,8 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h2>포워드 결과</h2>
-<p>Page 영역: <%= pageContext.getAttribute("pageAttr") %><br/>
-<p>request 영역: <%= request.getAttribute("requestAttr") %></p>
+<h2>파라미터 인크루드 파일</h2>
+<%= request.getParameter("loc1") %>
+
+<%= request.getParameter("loc2") %>
 </body>
 </html>
