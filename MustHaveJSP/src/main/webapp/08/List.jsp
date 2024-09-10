@@ -28,6 +28,7 @@ out.print("검색결과:"+totalCount);
 List<BoardDTO> boardLists = dao.selectList(param);
 
 // db접속해제
+dao.close();
 %>    
     
     
