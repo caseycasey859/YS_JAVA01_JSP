@@ -8,10 +8,13 @@
 	//DAO생성 DB연결 
 	BoardDAO dao= new BoardDAO(application);
 	
-	//게시물 가져오기
+	//조회수증가
 	dao.updateVisitCount(num);
 	
+	//게시물 가져오기
 	BoardDTO dto= dao.selectView(num);
+	
+	//DB 연결끊기
 	dao.close();
 
 %>    
@@ -31,7 +34,8 @@ function deletePost(){
     	form.action = "DeleteProcess.jsp";
     	form.submit();
     }
-}</script>
+}
+</script>
 </head>
 <body>
 <jsp:include page="../common/Link.jsp" />
@@ -49,27 +53,23 @@ function deletePost(){
 		<td>작성일</td>
 		<td><%=dto.getPostdate() %></td>
 		<td>조회수</td>
-		<td><%=dto.getPostdate() %></td>
+		<td><%=dto.getVisitcount() %></td>
 	</tr>
 	<tr>
 		<td>제목</td>
-		<td colspan="3"><%=dto.getTitle() %></td>
-	</tr>
-	<tr>
-		<td>내용</td>
-		<td colspan="3"><%=dto.getContent() %></td>
+		<td colspan="3"><%=dto.getContent().replace("\r\n","<br/>") %></td>
 	</tr>
 	<tr>
 		<td colspan="4" align="center">
 		<%
-		//세션id  작성자id비교
+		//세션id   작성자id비교
 		if(session.getAttribute("UserId") != null &&
-		    session.getAttribute("UserId").toString().equals(dto.getId()))
-			
-		{
-			
+			session.getAttribute("UserId").toString().equals(dto.getId()) )
+		{			
+		
 		%>
-			<button type="button" onclick="location.'href=List.jsp';">수정하기</button>
+		
+			<button type="button" onclick="location.href='Edit.jsp?num=<%= dto.getNum() %>';">수정하기</button>
 			<button type="button" onclick="deletePost();">삭제하기</button>
 			
 		<%
