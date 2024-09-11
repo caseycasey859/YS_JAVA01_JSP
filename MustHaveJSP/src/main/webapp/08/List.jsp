@@ -29,8 +29,9 @@ List<BoardDTO> boardLists = dao.selectList(param);
 
 // db접속해제
 dao.close();
-%>    
- <%
+
+%>  
+<%
 //현재 Navi Index
 int NavIndex = 1;
 String tempIndex = request.getParameter("NavIndex");
@@ -48,7 +49,7 @@ int minNavIndex = 1;
 int maxNavIndex = 20;
 
 %>  
-       
+    
     
 <!DOCTYPE html>
 <html>

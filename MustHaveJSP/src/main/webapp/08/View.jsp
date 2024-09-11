@@ -1,90 +1,142 @@
 <%@page import="model1.board.BoardDTO"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="model1.board.BoardDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String num = request.getParameter("num");
-	out.print(num);
-	//DAO생성 DB연결 
-	BoardDAO dao= new BoardDAO(application);
-	
-	//조회수증가
-	dao.updateVisitCount(num);
-	
-	//게시물 가져오기
-	BoardDTO dto= dao.selectView(num);
-	
-	//DB 연결끊기
-	dao.close();
+//dao 게시판목록가져오기
 
-%>    
+//게시판 dao생성해서 db접속
+BoardDAO dao = new BoardDAO(application);
+
+//검색조건 map에 보관
+String searchField = request.getParameter("searchField");
+String searchWord  = request.getParameter("searchWord");
+
+Map<String, Object> param = new HashMap<>();
+if(searchWord != null){
+	param.put("searchField", searchField);
+	param.put("searchWord", searchWord);	
+}
+
+// 검색조건에 따른 게시판 목록 수 읽기
+int totalCount = dao.selectCount(param);
+out.print("검색결과:"+totalCount);
+// 검색조건에 따른 게시판 목록 데이터 읽기
+List<BoardDTO> boardLists = dao.selectList(param);
+
+// db접속해제
+dao.close();
+
+%>  
+<%
+//현재 Navi Index
+int NavIndex = 1;
+String tempIndex = request.getParameter("NavIndex");
+if(tempIndex != null && !tempIndex.equals("")) {
+	NavIndex = Integer.parseInt(tempIndex);
+}
+// List_Size
+// Navi_Size
+
+int startNavIndex = 1;
+int endNavIndex = 10;
+int prevNavIndex = -1;
+int nextNavIndex = 11;
+int minNavIndex = 1;
+int maxNavIndex = 20;
+
+%>  
+    
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<script>
-function deletePost(){
-	//정말삭제할래?메시지
-    var confirmed = confirm("정말로 삭제하시겠습니까?");
-    //삭제 처리할 경로 지정
-    if(confirmed){
-    	var form = document.writeFrm;
-    	form.method = "post";
-    	form.action = "DeleteProcess.jsp";
-    	form.submit();
-    }
-}
-</script>
+<title>회원제 게시판</title>
 </head>
 <body>
-<jsp:include page="../common/Link.jsp" />
-<h2>회원제게시판 - 상세보기(View)</h2>
-<form name="writeFrm">
-<input type="text" name="num" value="<%=num %>"/>
-<table border="1" width="90%">
-	<tr>
-		<td width="10%">번호</td>
-		<td width="40%"><%=dto.getNum() %></td>
-		<td width="10%">작성자</td>
-		<td width="40%"><%=dto.getName() %></td>
-	</tr>
-	<tr>
-		<td>작성일</td>
-		<td><%=dto.getPostdate() %></td>
-		<td>조회수</td>
-		<td><%=dto.getVisitcount() %></td>
-	</tr>
-	<tr>
-		<td>제목</td>
-		<td colspan="3"><%=dto.getContent().replace("\r\n","<br/>") %></td>
-	</tr>
-	<tr>
-		<td colspan="4" align="center">
-		<%
-		//세션id   작성자id비교
-		if(session.getAttribute("UserId") != null &&
-			session.getAttribute("UserId").toString().equals(dto.getId()) )
-		{			
-		
-		%>
-		
-			<button type="button" onclick="location.href='Edit.jsp?num=<%= dto.getNum() %>';">수정하기</button>
-			<button type="button" onclick="deletePost();">삭제하기</button>
-			
-		<%
-		}
-		%>	
-			<button type="button" onclick="location.'href=List.jsp';">목록보기</button>		
-			
-			
-		</td>
-	</tr>
 
+<!-- 메뉴 -->
+<jsp:include page="../common/Link.jsp" />
+<h2>목록보기(List)</h2>
+
+<!-- 검색 -->
+<form method="get">
+	<table border="1" width="90%">
+		<tr>
+			<td align ="center">
+				<select name="searchField">
+					<option value = "title"> 제목 </option>
+					<option value = "content"> 내용 </option>		
+				</select>
+				<input type="text" name="searchWord"/>
+				<input type="submit" value="검색하기"/>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- 목록 -->
+<table border="1" width="90%">
+<thead>
+<tr>
+<th width="10%">번호</th>
+<th width="50%">제목</th>
+<th width="15%">작성자</th>
+<th width="10%">조회수</th>
+<th width="15%">작성일</th>
+</tr>
+</thead>
+<tbody>
+<%
+if(boardLists.isEmpty()) {		
+%>
+<tr>
+<td colspan="5" align="center">등록된 게시물이 없습니다.</td>
+</tr>
+<%
+} else {
+	int vitualNum = totalCount+1;
+	for(BoardDTO dto: boardLists){
+		vitualNum--;
+%>
+<tr>
+	<td><%=vitualNum %></td>
+	<td><a href="View.jsp?num=<%=dto.getNum() %>"><%= dto.getTitle() %></a></td>
+	<td><%= dto.getName() %></td>
+	<td><%= dto.getVisitcount() %></td>
+	<td><%= dto.getPostdate() %></td>
+</tr>
+<%
+	}
+}
+%>
+
+
+</tbody>
 </table>
 
-</form>
-
-
+<table border="1" width="90%">
+<tr align="right">
+<td align="center">
+<a href="List.jsp?NavIndex=<%=minNavIndex %>" > [처음]</a> &nbsp; 
+<a href="List.jsp?NavIndex=<%=prevNavIndex %>" > [이전페이지] </a>
+<%
+	for(int i = startNavIndex; i <= endNavIndex; i++) {
+		if( i == NavIndex ) {
+			out.print(i+"&nbsp;");
+		} else {
+			out.print("<a href='List.jsp?NavIndex="+i+"'>"+i+"</a>&nbsp;");			
+		}
+	}
+%>
+<a href="List.jsp?NavIndex=<%=nextNavIndex %>" > [다음페이지] </a>&nbsp; 
+<a href="List.jsp?NavIndex=<%=maxNavIndex %>">[마지막페이지]</a>
+</td>
+<td ><button type="button" onclick="location.href='Write.jsp'">글쓰기</button> </td>
+</tr>
+</table>
 </body>
 </html>
