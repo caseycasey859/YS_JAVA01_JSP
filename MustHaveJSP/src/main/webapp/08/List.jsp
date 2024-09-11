@@ -85,7 +85,7 @@ if(boardLists.isEmpty()) {
 %>
 <tr>
 	<td><%=vitualNum %></td>
-	<td><%= dto.getTitle() %></td>
+	<td><a href="View.jsp?num=<%=dto.getNum() %>"><%= dto.getTitle() %></a></td>
 	<td><%= dto.getName() %></td>
 	<td><%= dto.getVisitcount() %></td>
 	<td><%= dto.getPostdate() %></td>
@@ -100,7 +100,7 @@ if(boardLists.isEmpty()) {
 </table>
 
 <table border="1" width="90%">
-<tr align="right"><td ><button type="button" onclick="">글쓰기</button> </td></tr>
+<tr align="right"><td ><button type="button" onclick="location.href='Write.jsp'">글쓰기</button> </td></tr>
 </table>
 </body>
 </html>

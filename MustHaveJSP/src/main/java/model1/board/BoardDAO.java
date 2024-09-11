@@ -40,23 +40,23 @@ public class BoardDAO extends JDBConnect {
 	}
 	
 	//검색조건에 맞는 데이터목록
-		public List<BoardDTO> selectList(Map<String,Object> map) {
-			List<BoardDTO> bbs = new Vector<BoardDTO>();
-			
-			String query = "SELECT num,title,content,b.id, m.name ,postdate,visitcount "
-						 + "FROM board b "
-						 + "JOIN member m on b.id = m.id ";
-			
-			if (map.get("searchWord") != null) {
-				query += " WHERE " + map.get("searchField") + " " +
-			             " LIKE '%" + map.get("searchWord")+"%' ";
-			}			
-			query += " ORDER BY num DESC ";
-			
-			try {
-				stmt = con.createStatement();
-				rs = stmt.executeQuery(query);
-				while(rs.next()) {
+	public List<BoardDTO> selectList(Map<String,Object> map) {
+		List<BoardDTO> bbs = new Vector<BoardDTO>();
+		
+		String query = "SELECT num,title,content,b.id, m.name ,postdate,visitcount "
+					 + "FROM board b "
+					 + "JOIN member m on b.id = m.id ";
+		
+		if (map.get("searchWord") != null) {
+			query += " WHERE " + map.get("searchField") + " " +
+		             " LIKE '%" + map.get("searchWord")+"%' ";    
+		}			
+		query += " ORDER BY num DESC ";
+		
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next()) {
 				BoardDTO dto = new BoardDTO();
 				dto.setNum(rs.getString("num"));
 				dto.setTitle(rs.getString("title"));
@@ -65,32 +65,34 @@ public class BoardDAO extends JDBConnect {
 				dto.setName(rs.getString("name"));
 				dto.setPostdate(rs.getDate("postdate"));
 				dto.setVisitcount(rs.getString("visitcount"));			
-				bbs.add(dto);		}		
-			} catch(Exception e) {
-				System.out.println("게시판 목록을 읽어오다가 에러발생");
-				e.printStackTrace();			
+				bbs.add(dto);		
 			}		
-			return bbs;
-		
+		} catch(Exception e) {
+			System.out.println("게시판 목록을 읽어오다가 에러발생");
+			e.printStackTrace();			
+		}		
+		return bbs;
+	
+	}
+	
+	public int insertBoard(BoardDTO dto) {
+		int result = 0;		
+		String query ="INSERT INTO board ( num,title,content,id,visitcount) VALUES (SEQ_BOARD_NUM.NEXTVAL,?,?,?,0)";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, dto.getTitle());
+			psmt.setString(2, dto.getContent());
+			psmt.setString(3, dto.getId());
+			
+			result = psmt.executeUpdate();					
+		} catch(Exception e) {
+			System.out.println("게시물 입력중 예외발생");
+			e.printStackTrace();			
 		}
+		
+		return result;
+		
+	}
+	
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
