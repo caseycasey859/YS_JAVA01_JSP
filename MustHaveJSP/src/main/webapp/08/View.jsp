@@ -5,9 +5,10 @@
 <%
 	String num = request.getParameter("num");
 	out.print(num);
-	//DAO 
+	//DAO생성 DB연결 
 	BoardDAO dao= new BoardDAO(application);
 	
+	//게시물 가져오기
 	dao.updateVisitCount(num);
 	
 	BoardDTO dto= dao.selectView(num);
