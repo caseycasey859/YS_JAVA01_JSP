@@ -1,30 +1,34 @@
 <%@page import="model1.board.BoardDAO"%>
-<%@page import="utils.JSFunction"%>
 <%@page import="model1.board.BoardDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ include file="./IsLoggedIn.jsp" %>
 <%
-//폼값 받기
-String title = request.getParameter("title");
+//값을 얻기
+String title   = request.getParameter("title");
 String content = request.getParameter("content");
 
-
-//폼값을 DTO 객체에 저장
+//dto객체생성 값넣기
 BoardDTO dto = new BoardDTO();
 dto.setTitle(title);
 dto.setContent(content);
-dto.setId(session.getAttribute("UserId").toString());
+dto.setId( session.getAttribute("UserId").toString());
 
-
-// DAO 객체를 통해 DB에 DTO 저장
+//dao객체를 이용해서 저장하기
 BoardDAO dao = new BoardDAO(application);
-int iResult = dao.insertWrite(dto);
+int iResult = dao.insertBoard(dto);
 dao.close();
-
-//성공 or 실패?
-if(iResult == 1) {
+out.print("게시글 추가 결과:"+ iResult);
+//성공 실패
+if(iResult == 1){
+	//성공하면 목록으로 이동
 	response.sendRedirect("List.jsp");
-}else{
-	JSFunction.alertBack("글쓰기에 실패하였습니다.", out);
+	
+} else {
+	//실패 메시지후 글쓰기로 이동
+	JSFunction.alertBack("글쓰기 실패", out);
 }
+
+
+
 %>

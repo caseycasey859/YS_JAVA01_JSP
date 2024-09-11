@@ -1,8 +1,17 @@
+<%@page import="model1.board.BoardDTO"%>
+<%@page import="model1.board.BoardDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
 	String num = request.getParameter("num");
 	out.print(num);
+	//DAO 
+	BoardDAO dao= new BoardDAO(application);
+	
+	dao.updateVisitCount(num);
+	
+	BoardDTO dto= dao.selectView(num);
+	dao.close();
 
 %>    
 <!DOCTYPE html>
@@ -10,6 +19,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script>
+function deletePost(){
+	//정말삭제할래?메시지
+    var confirmed = confirm("정말로 삭제하시겠습니까?");
+    //삭제 처리할 경로 지정
+    if(confirmed){
+    	var form = document.writeFrm;
+    	form.method = "post";
+    	form.action = "DeleteProcess.jsp";
+    	form.submit();
+    }
+}</script>
 </head>
 <body>
 <jsp:include page="../common/Link.jsp" />
@@ -19,29 +40,43 @@
 <table border="1" width="90%">
 	<tr>
 		<td width="10%">번호</td>
-		<td width="40%"></td>
+		<td width="40%"><%=dto.getNum() %></td>
 		<td width="10%">작성자</td>
-		<td width="40%"></td>
+		<td width="40%"><%=dto.getName() %></td>
 	</tr>
 	<tr>
 		<td>작성일</td>
-		<td></td>
+		<td><%=dto.getPostdate() %></td>
 		<td>조회수</td>
-		<td></td>
+		<td><%=dto.getPostdate() %></td>
 	</tr>
 	<tr>
 		<td>제목</td>
-		<td colspan="3"></td>
+		<td colspan="3"><%=dto.getTitle() %></td>
 	</tr>
 	<tr>
 		<td>내용</td>
-		<td colspan="3"></td>
+		<td colspan="3"><%=dto.getContent() %></td>
 	</tr>
 	<tr>
 		<td colspan="4" align="center">
-			<button type="button" onclick="">수정하기</button>
-			<button type="button" onclick="">삭제하기</button>
-			<button type="button" onclick="">목록보기</button>		
+		<%
+		//세션id  작성자id비교
+		if(session.getAttribute("UserId") != null &&
+		    session.getAttribute("UserId").toString().equals(dto.getId()))
+			
+		{
+			
+		%>
+			<button type="button" onclick="location.'href=List.jsp';">수정하기</button>
+			<button type="button" onclick="deletePost();">삭제하기</button>
+			
+		<%
+		}
+		%>	
+			<button type="button" onclick="location.'href=List.jsp';">목록보기</button>		
+			
+			
 		</td>
 	</tr>
 
